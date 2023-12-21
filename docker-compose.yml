@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  ghost-container:
+    image: ghost:latest
+    environment:
+      database__client: mysql
+      database__connection__host: mysql-container
+      database__connection__user: ghost
+      database__connection__password: ghost
+      database__connection__database: ghost
+      url: http://localhost:3001
+    networks:
+      - blog-network
+    volumes:
+      - /chemin/vers/repertoire/ghost-data:/var/lib/ghost/content
+    ports:
+      - "3001:2368"
+    depends_on:
+      - mysql-container
+
+  mysql-container:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ghost
+      MYSQL_USER: ghost
+      MYSQL_PASSWORD: ghost
+    networks:
+      - blog-network
+    volumes:
+      - /chemin/vers/repertoire/mysql-data:/var/lib/mysql
+
+
+networks:
+  blog-network:
+    driver: bridge
